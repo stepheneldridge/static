@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Static</title>
+<script>
+	var fps = 60;
+	var c;
+	var ctx;
+	var arr;
+	var scale = 10;
+	
+	var x = 1;
+	var y = 1;
+	var vx = 1/scale;
+	var vy =0;
+	var size = 100/scale;
+	function getActualWidth() {
+		var actualWidth = window.innerWidth ||
+						  document.documentElement.clientWidth ||
+						  document.body.clientWidth ||
+						  document.body.offsetWidth;
+
+		return actualWidth;
+	}
+	function getActualHeight() {
+		var actualWidth = window.innerHeight ||
+						  document.documentElement.clientHeight ||
+						  document.body.clientHeight ||
+						  document.body.offsetHeight;
+
+		return actualWidth;
+	}
+	function clear(){
+		ctx.clearRect(0,0,c.width,c.height);
+	}
+	function render(){
+		for(var i = 0; i<c.width/scale;i++){
+			for(var j = 0;j<c.height/scale;j++){
+				if(i>x&&i<x+size&&j>y&&j<y+size){
+					ctx.fillStyle='rgb('+Math.round(arr[i][j]*.3)+','+Math.round(arr[i][j]*.3)+','+Math.round(arr[i][j]*.3)+')';
+				}else{
+					ctx.fillStyle='rgb('+arr[i][j]+','+arr[i][j]+','+arr[i][j]+')';
+				}
+				ctx.fillRect(i*scale,j*scale,scale,scale);
+				arr[i][j]=Math.round(Math.random()*255);
+			}
+		}
+	}
+	function run(){
+		clear();
+		if(x>=c.width/scale-size||x<=0){
+			
+			vx=-vx;
+			x=x+vx;
+		}
+		if(y>c.height/scale-size){
+			vy=-vy;
+			y=c.height/scale-size;
+		}
+		vy+=1/(10*scale);
+		x+=vx;
+		y+=vy;
+		vy*=.999
+		render();
+		
+	}
+	function populate(){
+		arr=[]
+		for(var i = 0; i<c.width/scale;i++){
+			arr[i]=[];
+			for(var j = 0;j<c.height/scale;j++){
+				arr[i][j]=Math.round(Math.random()*255);
+			}
+		}
+	}
+	function init(){ 
+		c=document.getElementById("canvas");
+		ctx=c.getContext("2d");
+		c.width = getActualWidth();  
+		c.height = getActualHeight(); 
+		ctx.fillStyle='rgb(0,0,0)';
+		populate();
+		setInterval(run,1000/fps);
+	}
+</script>
+</head>
+<body onload="init();">
+<canvas id="canvas" style="position:absolute;top:0px;left:0px;width:100%;height:100%;"></canvas>
+<style>
+body {
+	background-color:lightgrey;
+	
+}
+</style>
+</body>
+</html>
